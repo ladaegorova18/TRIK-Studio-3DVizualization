@@ -10,10 +10,6 @@ public class Deserializer : MonoBehaviour
 {
     /// TODO: make it static
 
-    List<ObjectScript> dynamicObjectsScripts = new List<ObjectScript>();
-    ObjectScript robotScript;
-
-    char[] charSeparator = { '\r' };
 
     /// <summary>
     /// Reads file from directory with application
@@ -52,13 +48,13 @@ public class Deserializer : MonoBehaviour
 
     [Serializable]
     public class Frame
-        {
+    {
         public List<State> frame;
-        }
+    }
 
     [Serializable]
     public class Frames
-        {
+    {
         public List<Frame> frames;
     }
 
@@ -66,8 +62,6 @@ public class Deserializer : MonoBehaviour
 
     private Frames ReadJsonFile(string frames) => JsonUtility.FromJson<Frames>(frames);
 
-        robotScript.Trajectory = SplitByNewLines(firstRobotTrajectory); /// first part of commands is robot trajectory
-    }
 
     /// <summary>
     /// Parses file into separate trajectories
@@ -76,8 +70,6 @@ public class Deserializer : MonoBehaviour
     {
         string commands = ReadFile(fileName);
         var frames = ReadJsonFile(commands);
-
-        yield return new WaitForSeconds(0.5f);
-        yield return StartCoroutine(StartProcess());
+        
     }
 }
