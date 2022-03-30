@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root version="20190819">
+    <world>
+        <walls>
+            <wall id="{da13e8e2-4629-4c5f-a193-19391be961ec}" stroke-style="none" begin="6:241" stroke="#ff000000" stroke-width="0" fill="#ff000000" end="254:241"/>
+            <wall id="{f823aa10-f872-4ec8-a6f0-2d288895cacf}" stroke-style="none" begin="254:242" stroke="#ff000000" stroke-width="0" fill="#ff000000" end="254:421"/>
+        </walls>
+        <skittles/>
+        <balls/>
+        <colorFields>
+            <ellipse id="{402599fd-ac09-4d35-8f70-ab073729b3f4}" stroke-style="solid" fill-style="none" begin="-24:150" stroke="#ffff0000" stroke-width="6" fill="#ffffffff" end="62:229"/>
+            <ellipse id="{fe1838de-d902-431a-b82c-b03ad599a090}" stroke-style="solid" fill-style="none" begin="270:315" stroke="#ff008000" stroke-width="6" fill="#ffffffff" end="414:464"/>
+        </colorFields>
+        <images/>
+        <regions/>
+    </world>
+    <robots>
+        <robot id="trikKitRobot" direction="103.5" position="276.963:370.02">
+            <sensors>
+                <sensor direction="0" position="75:25" port="M4###output###М4###" type="kitBase::robotModel::robotParts::Motor"/>
+                <sensor direction="0" position="0:0" port="LineSensorPort###input###TrikLineSensorPort###lineSensor" type=""/>
+                <sensor direction="0" position="75:25" port="M3###output###М3###" type="kitBase::robotModel::robotParts::Motor"/>
+                <sensor direction="0" position="75:25" port="M2###output###М2###" type="kitBase::robotModel::robotParts::Motor"/>
+                <sensor direction="0" position="75:25" port="M1###output###М1###" type="kitBase::robotModel::robotParts::Motor"/>
+                <sensor direction="0" position="0:0" port="A1###input###А1###sensorA1" type=""/>
+                <sensor direction="0" position="0:0" port="A2###input###А2###sensorA2" type=""/>
+            </sensors>
+            <startPosition id="{ee3e465e-31a0-4741-b47e-8d4f531c0dcf}" direction="0" x="21.719" y="188.512"/>
+            <wheels right="M4###output###М4###" left="M3###output###М3###"/>
+        </robot>
+    </robots>
+    <settings realisticPhysics="false" realisticMotors="false" realisticSensors="false"/>
+</root>

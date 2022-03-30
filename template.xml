@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <world>
+    <background/>
+    <walls/>
+    <skittles/>
+    <balls/>
+    <colorFields/>
+    <images/>
+    <regions/>
+  </world>
+  <robots>
+    <robot direction="0" id="trikKitRobot" position="0:0">
+      <sensors/>
+      <startPosition direction="0" id="{name}" y="25" x="25"/>
+      <wheels left="M4###output###М4###" right="M3###output###М3###"/>
+    </robot>
+  </robots>
+  <settings realisticSensors="false" realisticPhysics="true" realisticMotors="false"/>
+</root>
