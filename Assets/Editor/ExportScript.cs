@@ -70,6 +70,7 @@ public class ExportScript : EditorWindow
         foreach (var tag in tags) { CreateTag(tag); }
 
         var doc = XDocument.Load(Directory.GetCurrentDirectory() + "/template.xml");
+
         var root = doc.Root;
         if (root != null)
         {

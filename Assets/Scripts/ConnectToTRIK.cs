@@ -24,6 +24,7 @@ public class ConnectToTRIK
 
     private static void Listener(string host, int port)
     {
+        Debug.Log("Server started");
         var localAddr = IPAddress.Parse(host);
         listener = new TcpListener(localAddr, port);
         listener.Start();
@@ -41,6 +42,15 @@ public class ConnectToTRIK
 
                     while (true)
                     {
+                        //Console.Write(userName + ": ");
+                        //// ввод сообщения
+                        //string message = Console.ReadLine();
+                        //message = String.Format("{0}: {1}", userName, message);
+                        //// преобразуем сообщение в массив байтов
+                        //byte[] data = Encoding.Unicode.GetBytes(message);
+                        //// отправка сообщения
+                        //stream.Write(data, 0, data.Length);
+
                         // получаем ответ
                         var data = new byte[64]; // буфер для получаемых данных
                         var builder = new StringBuilder();
@@ -81,7 +91,7 @@ public class ConnectToTRIK
         {
             listener.Stop();
         }
-    }
+        }
 
     public static void StopServer()
     {

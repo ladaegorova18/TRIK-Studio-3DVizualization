@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RobotObject : ObjectScript
 {
@@ -13,6 +14,7 @@ public class RobotObject : ObjectScript
     private AudioSource audioSource;
 
     private float countInterval = 0.25f;
+    private bool paused = false;
 
     private Vector3 extents { get; set; }
 
@@ -58,14 +60,14 @@ public class RobotObject : ObjectScript
         //Debug.Log(target);
         float t = 0;
         while (t < 1)
-        {
+    {
             if (Vector3.Distance(transform.position, target) > 0.01)
-            {
+        {
                 transform.position = Vector3.Lerp(transform.position, target, t);
-            }
+        }
             t += Time.deltaTime / animDuration;
             yield return null;
-        }
+        }    
     }
 
     /// <summary>

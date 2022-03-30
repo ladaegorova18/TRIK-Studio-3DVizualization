@@ -42,7 +42,7 @@ public class ObjectScript : MonoBehaviour
     }
 
     public IEnumerator ReadComplexLine(string line)
-    {
+        {
         var commands = line.Split('|');
         foreach (var command in commands)
         {
@@ -54,10 +54,10 @@ public class ObjectScript : MonoBehaviour
     {
         //++currLine;
         //if (Trajectory.Length > currLine)
-        //{
+            //{
         var commandData = line.Split('=');
 
-        switch (commandData[0])
+            switch (commandData[0])
             {
                 case "pos":
                     {
@@ -102,7 +102,7 @@ public class ObjectScript : MonoBehaviour
         while (t < 1)
         {
             if (Vector3.Distance(transform.position, target) > 0.01)
-            {
+        {
                 transform.position = Vector3.Lerp(transform.position, target, t);
             }
             t += Time.deltaTime / animDuration;
