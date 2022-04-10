@@ -1,101 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using UnityEngine;
 
 public class ConnectToTRIK 
 {
-    private static TcpListener listener;
+    private static Server recieveServer;
+    private static Server sendServer;
 
-    static ObjectManager manager;
+    private static ObjectManager manager;
 
-    void Awake()
-    {
-    }
+    private delegate void StopButtonHandler(bool paused);
+    private static event StopButtonHandler NotifyRunStopButton;
+
+    private delegate void RestartButtonHandler();
+    private static event RestartButtonHandler NotifyRestartButton;
+
+    private static bool paused = false;
+
+    public static string ReceiveServerHost { get; private set; } = "127.0.0.1";
+    public static string SendServerHost { get; private set; } = "127.0.0.1";
+    public static int ReceiveServerPort { get; private set; } = 8080;
+    public static int SendServerPort { get; private set; } = 9000;
 
     public static void Connect()
     {
         manager = GameObject.Find("ButtonScripts").GetComponent<ObjectManager>();
-        new Thread(() => Listener("127.0.0.1", 8080)).Start();
+
+        recieveServer = new Server();
+        sendServer = new Server();
+
+        NotifyRunStopButton += sendServer.RunStopPressed;
+        NotifyRestartButton += sendServer.RestartPressed;
+
+        new Thread(() => recieveServer.StartServer(ReceiveServerHost, ReceiveServerPort, Server.ServerType.Recieve, manager)).Start();
+        new Thread(() => sendServer.StartServer(SendServerHost, SendServerPort, Server.ServerType.Send, manager)).Start();
     }
 
-    private static void Listener(string host, int port)
+    public static void StopServers()
     {
-        Debug.Log("Server started");
-        var localAddr = IPAddress.Parse(host);
-        listener = new TcpListener(localAddr, port);
-        listener.Start();
-        Debug.Log("Server started");
-
-        try
-        {
-            while (true)
-            {
-                var client = listener.AcceptTcpClient();
-                Debug.Log(client.Client.LocalEndPoint);
-                try
-                {
-                    var stream = client.GetStream();
-
-                    while (true)
-                    {
-                        //Console.Write(userName + ": ");
-                        //// ввод сообщения
-                        //string message = Console.ReadLine();
-                        //message = String.Format("{0}: {1}", userName, message);
-                        //// преобразуем сообщение в массив байтов
-                        //byte[] data = Encoding.Unicode.GetBytes(message);
-                        //// отправка сообщения
-                        //stream.Write(data, 0, data.Length);
-
-                        // получаем ответ
-                        var data = new byte[64]; // буфер для получаемых данных
-                        var builder = new StringBuilder();
-                        int bytes = 0;
-                        do
-                        {
-                            bytes = stream.Read(data, 0, data.Length);
-                            //builder.Append(Encoding.ASCII.GetString(data, 0, bytes));
-                            builder.Append(Encoding.UTF8.GetString(data, 0, bytes));
-                        }
-                        while (stream.DataAvailable);
-
-                        var frameString = builder.ToString();
-                        //if (frameString != "" && frameString != null)
-                        //{
-                        //    Debug.Log("Сервер: " + frameString);
-                        //}
-                        manager.AddFrame(frameString);
-                        //manager.PlayFrameFrom();
-                    }
-                }
-                catch (Exception e)
-                {
-                    Debug.Log(e.Message);
-                    Debug.Log(e);
-                }
-                finally
-                {
-                    client.Close();
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e.Message);
-        }
-        finally
-        {
-            listener.Stop();
-        }
-        }
-
-    public static void StopServer()
-    {
-        listener.Stop();
-        Debug.Log("Server stopped");
+        recieveServer.StopServer();
+        sendServer.StopServer();
     }
+
+    public static void RunStopButtonPressed()
+    {
+        NotifyRunStopButton.Invoke(paused);
+        paused = !paused;
+    }
+
+    public static void RestartPressed() => NotifyRestartButton.Invoke();
 }

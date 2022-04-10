@@ -5,9 +5,6 @@ using UnityEngine;
 
 public class ObjectManager : MonoBehaviour
 {
-    private float speed = 1f;
-    private bool paused = false;
-
     private Dictionary<string, ObjectScript> objectsDictionary = new Dictionary<string, ObjectScript>();
     private List<Deserializer.Frame> frames = new List<Deserializer.Frame>();
     private int currFrame = 0;
@@ -41,7 +38,15 @@ public class ObjectManager : MonoBehaviour
         {
             if (str != "")
             {
-                frames.Add(Deserializer.ReadFrame(separator[0] + str));
+                try
+                {
+                    frames.Add(Deserializer.ReadFrame(separator[0] + str));
+                }
+                catch (System.Exception e)
+                {
+                    Debug.Log(str);
+                    Debug.Log(e.Message);
+                }
             }
         }
     }
@@ -59,12 +64,14 @@ public class ObjectManager : MonoBehaviour
         {
             foreach (var objectState in frames[currFrame].frame)
             {
-                StartCoroutine(objectsDictionary[objectState.id].ReadComplexLine(objectState.state));
+                if (objectsDictionary.ContainsKey(objectState.id))
+                    StartCoroutine(objectsDictionary[objectState.id].ReadComplexLine(objectState.state));
+                //Debug.Log(objectState.id + objectState.state);
             }
             ++currFrame;
         }
 
-        yield return new WaitForSeconds(0.04f);
+        yield return new WaitForSeconds(0.04f); /// 24 frames per second = one frame lasts for ~0.04 sec 
         yield return StartCoroutine(PlayFrame());
     }
 }

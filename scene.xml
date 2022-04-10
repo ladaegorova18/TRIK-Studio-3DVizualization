@@ -10,22 +10,22 @@
     </walls>
     <skittles />
     <balls>
-      <ball id="ball1" markerX="-228.2" markerY="69.9" x="-228.2" y="69.9" />
-      <ball id="ball2" markerX="-230.4" markerY="-68.5" x="-230.4" y="-68.5" />
-      <ball id="ball3" markerX="-89" markerY="9.7" x="-89" y="9.7" />
-      <ball id="ball4" markerX="89" markerY="7" x="89" y="7" />
-      <ball id="ball5" markerX="-192.9" markerY="20.4" x="-192.9" y="20.4" />
-      <ball id="ball6" markerX="-156" markerY="-28.7" x="-156" y="-28.7" />
-      <ball id="ball7" markerX="-155.5" markerY="7.5" x="-155.5" y="7.5" />
-      <ball id="ball8" markerX="-192" markerY="53.3" x="-192" y="53.3" />
-      <ball id="ball9" markerX="-228.2" markerY="33" x="-228.2" y="33" />
-      <ball id="ball10" markerX="-228.2" markerY="-0.5" x="-228.2" y="-0.5" />
-      <ball id="ball11" markerX="-228.2" markerY="-33.7" x="-228.2" y="-33.7" />
-      <ball id="ball12" markerX="-156" markerY="41.1" x="-156" y="41.1" />
-      <ball id="ball13" markerX="-192" markerY="-15.1" x="-192" y="-15.1" />
-      <ball id="ball14" markerX="-118.7" markerY="-9.6" x="-118.7" y="-9.6" />
-      <ball id="ball15" markerX="-192" markerY="-49.6" x="-192" y="-49.6" />
-      <ball id="ball16" markerX="-119.9" markerY="24.6" x="-119.9" y="24.6" />
+      <ball id="ball1" markerX="-119.9" markerY="24.6" x="-119.9" y="24.6" />
+      <ball id="ball2" markerX="-192" markerY="-49.6" x="-192" y="-49.6" />
+      <ball id="ball3" markerX="-118.7" markerY="-9.6" x="-118.7" y="-9.6" />
+      <ball id="ball4" markerX="-192" markerY="-15.1" x="-192" y="-15.1" />
+      <ball id="ball5" markerX="-156" markerY="41.1" x="-156" y="41.1" />
+      <ball id="ball6" markerX="-228.2" markerY="-33.7" x="-228.2" y="-33.7" />
+      <ball id="ball7" markerX="-228.2" markerY="-0.5" x="-228.2" y="-0.5" />
+      <ball id="ball8" markerX="-228.2" markerY="33" x="-228.2" y="33" />
+      <ball id="ball9" markerX="-192" markerY="53.3" x="-192" y="53.3" />
+      <ball id="ball10" markerX="-155.5" markerY="7.5" x="-155.5" y="7.5" />
+      <ball id="ball11" markerX="-156" markerY="-28.7" x="-156" y="-28.7" />
+      <ball id="ball12" markerX="-192.9" markerY="20.4" x="-192.9" y="20.4" />
+      <ball id="ball13" markerX="89" markerY="7" x="89" y="7" />
+      <ball id="ball14" markerX="-89" markerY="9.7" x="-89" y="9.7" />
+      <ball id="ball15" markerX="-230.4" markerY="-68.5" x="-230.4" y="-68.5" />
+      <ball id="ball16" markerX="-228.2" markerY="69.9" x="-228.2" y="69.9" />
     </balls>
     <colorFields />
     <images />

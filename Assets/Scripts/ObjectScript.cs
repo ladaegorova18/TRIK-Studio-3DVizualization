@@ -13,12 +13,13 @@ public class ObjectScript : MonoBehaviour
     private Quaternion startRotation;
 
     /// <summary>
-    /// robot position is rotated to 90 degrees 
+    /// robot position is rotated in 90 degrees 
     /// </summary>
     protected virtual float rotateAngle { get; } = 0;
 
     protected float animDuration = 0.04f;
     protected float speed = 1f;
+
 
     public void Awake()
     {
@@ -42,19 +43,20 @@ public class ObjectScript : MonoBehaviour
     }
 
     public IEnumerator ReadComplexLine(string line)
-        {
+    {
         var commands = line.Split('|');
         foreach (var command in commands)
         {
-            yield return ReadLine(command);
+            yield return StartCoroutine(ReadLine(command));
         }
     }
 
+    /// <summary>
+    /// Read one command and execute it
+    /// </summary>
+    /// <param name="line"> command to execute </param>
     public IEnumerator ReadLine(string line)
     {
-        //++currLine;
-        //if (Trajectory.Length > currLine)
-            //{
         var commandData = line.Split('=');
 
             switch (commandData[0])
@@ -81,7 +83,6 @@ public class ObjectScript : MonoBehaviour
                     }
                 default:
                     break;
-            //}
         }
     }
     //yield return commandData[0] switch

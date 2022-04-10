@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class RobotObject : ObjectScript
 {
@@ -25,7 +24,10 @@ public class RobotObject : ObjectScript
     {
         audioSource = GetComponent<AudioSource>();
         lineDrawer = transform.Find("LineDrawer");
-        extents = GetComponent<BoxCollider>().bounds.extents / 2;
+        extents = GetComponent<BoxCollider>().bounds.extents;
+        //Debug.Log(GetComponent<BoxCollider>().size / 2);
+        //extents = GetComponent<BoxCollider>().size / 2;
+        extents = new Vector3(extents.x, extents.y, 50);
     }
 
     public override void Reset()
@@ -56,15 +58,15 @@ public class RobotObject : ObjectScript
     {
         // calculate distance to move
         var coords = data.Split(' ').ToList().Select(x => float.Parse(x)).ToList();
-        var target = new Vector3(coords[0] - extents.x, transform.position.y, (-coords[1] - extents.z));
-        //Debug.Log(target);
+        var target = new Vector3(coords[0] - extents.x, transform.position.y, coords[1] - 50);
+
         float t = 0;
         while (t < 1)
-    {
-            if (Vector3.Distance(transform.position, target) > 0.01)
         {
+            if (Vector3.Distance(transform.position, target) > 0.01)
+            {
                 transform.position = Vector3.Lerp(transform.position, target, t);
-        }
+            }
             t += Time.deltaTime / animDuration;
             yield return null;
         }    

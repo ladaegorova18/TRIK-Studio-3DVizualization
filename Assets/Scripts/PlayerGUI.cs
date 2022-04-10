@@ -1,13 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerGUI : MonoBehaviour
 {
 
     public void StartVizualize() => ConnectToTRIK.Connect();
 
-    public void StopServer() => ConnectToTRIK.StopServer();
+    public void StopServer() => ConnectToTRIK.StopServers();
+
+    public void RunStopButtonPressed() => ConnectToTRIK.RunStopButtonPressed();
+
+    public void RestartPressed() => ConnectToTRIK.RestartPressed();
 
     //public void Pause()
     //{

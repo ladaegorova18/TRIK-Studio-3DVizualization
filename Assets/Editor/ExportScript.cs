@@ -19,10 +19,6 @@ public class ExportScript : EditorWindow
         {
             Export();
         }
-        if (GUILayout.Button("Stop server"))
-        {
-            ConnectToTRIK.StopServer();
-        }
         if (GUILayout.Button("ImportSTL"))
         {
             var stl = new DrawStlMesh();
