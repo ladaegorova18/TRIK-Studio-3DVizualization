@@ -1,75 +1,97 @@
 ﻿using System.IO;
 using System.Text;
-using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
-using System.Collections;
 using System;
 
-public class Deserializer : MonoBehaviour
+public class Deserializer
 {
-    /// TODO: make it static
+	private static ObjectManager manager;
 
+	public static void SetManager(ObjectManager _manager) => manager = _manager;
 
-    /// <summary>
-    /// Reads file from directory with application
-    /// </summary>
-    /// <param name="fileName"> Short file name with extention ("example.txt")</param>
-    /// <returns> File content </returns>
-    private string ReadFile(string fileName)
-    {
-        string commands;
-        var pathToFile = $"{Directory.GetCurrentDirectory()}/{fileName}";
-        if (!File.Exists(pathToFile))
-        {
-            throw new FileNotFoundException();
-        }
+	/// <summary>
+	/// Reads file from directory with application and parses it into separate frames
+	/// </summary>
+	/// <param name="fileName"> Short file name with extention ("example.txt")</param>
+	/// <returns> File content </returns>
+	private static Frames ReadFile(string fileName)
+	{
+		string commands;
+		var pathToFile = $"{Directory.GetCurrentDirectory()}/Trajectories/{fileName}";
 
-        using (var fstream = new FileStream(pathToFile, FileMode.Open))
-        {
-            var array = new byte[fstream.Length];
-            fstream.Read(array, 0, array.Length);
-            commands = Encoding.Default.GetString(array);
-        }
-        return commands;
-    }
+		if (!File.Exists(pathToFile))
+		{
+			throw new FileNotFoundException();
+		}
 
-    [Serializable]
-    public class State
-    {
-        public string id;
-        public string state;
-        public State (string _id, string _traj)
-        {
-            id = _id;
-            state = _traj;
-        }
-    }
+		using (var fstream = new FileStream(pathToFile, FileMode.Open))
+		{
+			var array = new byte[fstream.Length];
+			fstream.Read(array, 0, array.Length);
+			commands = Encoding.Default.GetString(array);
+		}
 
-    [Serializable]
-    public class Frame
-    {
-        public List<State> frame;
-    }
+		return UnityEngine.JsonUtility.FromJson<Frames>(commands);
+	}
 
-    [Serializable]
-    public class Frames
-    {
-        public List<Frame> frames;
-    }
+	/// <summary>
+	/// Adds new frame to frame array
+	/// </summary>
+	public static void ParseFrameFromString(string frameString)
+	{
+		string[] separator = { "{\"frame\"" };
+		var framesStrings = frameString.Split(separator, StringSplitOptions.None);
+		foreach (var str in framesStrings)
+		{
+			if (str != "")
+			{
+				try
+				{
+					var frame = UnityEngine.JsonUtility.FromJson<Frame>(separator[0] + str);
+					manager.AddFrame(frame);
+				}
+				catch (Exception e)
+				{
+					UnityEngine.Debug.Log(str);
+					UnityEngine.Debug.Log(e.Message);
+				}
+			}
+		}
+	}
+	
+	/// <summary>
+	/// Read file and get all frames from it
+	/// </summary>
+	public static void AttachTrajectories(string fileName)
+	{
+		var frames = ReadFile(fileName);
+		foreach (var frame in frames.frames)
+		{
+			manager.AddFrame(frame);
+		}
+	}
 
-    public static Frame ReadFrame(string frame) => JsonUtility.FromJson<Frame>(frame);
+	[Serializable]
+	public class State
+	{
+		public string id;
+		public string state;
+		public State(string _id, string _traj)
+		{
+			id = _id;
+			state = _traj;
+		}
+	}
 
-    private Frames ReadJsonFile(string frames) => JsonUtility.FromJson<Frames>(frames);
+	[Serializable]
+	public class Frame
+	{
+		public List<State> frame;
+	}
 
-
-    /// <summary>
-    /// Parses file into separate trajectories
-    /// </summary>
-    public void AttachTrajectories(string fileName)
-    {
-        string commands = ReadFile(fileName);
-        var frames = ReadJsonFile(commands);
-        
-    }
+	[Serializable]
+	public class Frames
+	{
+		public List<Frame> frames;
+	}
 }

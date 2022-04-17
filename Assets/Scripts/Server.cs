@@ -6,112 +6,105 @@ using UnityEngine;
 
 public class Server
 {
-    private TcpListener listener;
-    private NetworkStream stream;
-    ObjectManager manager;
-    TcpClient client;
+	private TcpListener listener;
+	private NetworkStream stream;
+	private bool isOn = true;
+	TcpClient client;
 
-    public enum ServerType
-    {
-        Recieve,
-        Send
-    }
+	public enum ServerType { Recieve, Send }
 
-    public void StartServer(string host, int port, ServerType type, ObjectManager _manager)
-    {
-        Debug.Log("Server started");
-        manager = _manager;
-        var localAddr = IPAddress.Parse(host);
-        listener = new TcpListener(localAddr, port);
-        listener.Start();
+	public void StartServer(string host, int port, ServerType type)
+	{
+		isOn = true;
+		listener = new TcpListener(IPAddress.Parse(host), port);
+		listener.Start();
+		Debug.Log("Listening...");
 
-        try
-        {
-            while (true)
-            {
-                client = listener.AcceptTcpClient();
-                Debug.Log(client.Client.LocalEndPoint);
-                try
-                {
-                    stream = client.GetStream();
+		try
+		{
+			while (isOn)
+			{
+				client = listener.AcceptTcpClient();
+				Debug.Log("Connected to: " + client.Client.LocalEndPoint);
+				
+				stream = client.GetStream();
 
-                    if (type == ServerType.Recieve)
-                    {
-                        ReceiveMessage();
-                    }
-                }
-                catch (Exception e)
-                {
-                    Debug.Log(e.Message);
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e.Message);
-        }
-    }
+				if (type == ServerType.Recieve)
+					ReceiveMessage();
+			}
+		}
+		catch (Exception e)
+		{
+			Debug.Log(e.Message);
+		}
+	}
 
-    public void RunStopPressed(bool paused)
-    {
-        string message = paused ? "Run" : "Stop";
-        SendMessage(message);
-    }
+	public void RunStopPressed(bool paused)
+	{
+		var message = paused ? "Run" : "Stop";
+		SendMessage(message);
+	}
 
-    public void RestartPressed()
-    {
-        SendMessage("Restart");
-    }
+	public void RestartPressed() => SendMessage("Restart");
 
-    /// <summary>
-    /// Receives message from client
-    /// </summary>
-    private void ReceiveMessage()
-    {
-        while (true)
-        {
-            var data = new byte[64];
-            var builder = new StringBuilder();
+	/// <summary>
+	/// Sends message in UTF8 to client (pause, play, restart)
+	/// </summary>
+	private void SendMessage(string message)
+	{
+		byte[] data = Encoding.UTF8.GetBytes(message);
+		try
+		{
+			if (stream.CanWrite)
+			{
+				stream.Write(data, 0, data.Length);
+				Debug.Log($"{message} sent");
+			}
+		}
+		catch (Exception e)
+		{
+			Debug.Log(e.ToString());
+		}
+	}
 
-            do
-            {
-                int bytes = stream.Read(data, 0, data.Length);
-                builder.Append(Encoding.UTF8.GetString(data, 0, bytes));
-            }
-            while (stream.DataAvailable);
+	/// <summary>
+	/// Receives message from client
+	/// </summary>
+	private void ReceiveMessage()
+	{
+		while (isOn)
+		{
+			try
+			{
+				var data = new byte[64];
+				var builder = new StringBuilder();
 
-            manager.AddFrame(builder.ToString());
-            Debug.Log(builder.ToString());
-        }
-    }
+				do
+				{
+					var bytes = stream?.Read(data, 0, data.Length);
+					if (bytes.HasValue)
+						builder.Append(Encoding.UTF8.GetString(data, 0, bytes.Value));
+				}
+				while (stream.DataAvailable);
 
-    /// <summary>
-    /// Sends message in UTF8 to client (pause, play, restart)
-    /// </summary>
-    private void SendMessage(string message)
-    {
-        byte[] data = Encoding.UTF8.GetBytes(message);
-        try
-        {
-            if (stream.CanWrite)
-            {
-                stream.Write(data, 0, data.Length);
-                Debug.Log($"{message} sent");
-            }
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e.ToString());
-        }
-    }
+				//Debug.Log(builder.ToString());
+				Deserializer.ParseFrameFromString(builder.ToString());
+			}
+			catch (Exception e)
+			{
+				Debug.Log(e.Message);
+			}
+		}
+	}
 
-    /// <summary>
-    /// Stops listener and client
-    /// </summary>
-    public void StopServer()
-    {
-        client.Close();
-        listener?.Stop();
-        Debug.Log("Server stopped");
-    }
+	/// <summary>
+	/// Stops listener and client
+	/// </summary>
+	public void StopServer()
+	{
+		client?.Close();
+		listener?.Stop();
+		isOn = false;
+		Debug.Log("Server stopped");
+	}
 }

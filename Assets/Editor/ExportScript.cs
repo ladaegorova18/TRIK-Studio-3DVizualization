@@ -3,8 +3,13 @@ using UnityEditor;
 using System.IO;
 using System.Xml.Linq;
 
+/// <summary>
+/// Saves scene to XML file which can be uploaded to TRIK Studio
+/// </summary>
 public class ExportScript : EditorWindow
 {
+    private static string path = Directory.GetCurrentDirectory() + "/XMLScenes/";
+
     [MenuItem("Window/TRIK Studio interface")]
     static void OpenWindow()
     {
@@ -24,6 +29,8 @@ public class ExportScript : EditorWindow
             var stl = new DrawStlMesh();
             stl.CreateSTL();
         }
+        GUILayout.TextField("Hello! Here \n hello world");
+        /// TODO: add manual
     }
 
     /// <summary>
@@ -65,7 +72,7 @@ public class ExportScript : EditorWindow
         var tags = new string[] { "static", "ball", "skittle", "robot", "line" };
         foreach (var tag in tags) { CreateTag(tag); }
 
-        var doc = XDocument.Load(Directory.GetCurrentDirectory() + "/template.xml");
+        var doc = XDocument.Load(path + "template.xml");
 
         var root = doc.Root;
         if (root != null)
@@ -88,7 +95,7 @@ public class ExportScript : EditorWindow
             BallsAndSkittles(ballsObjects, world, "ball");
             BallsAndSkittles(skittlesObjects, world, "skittle");
         }
-        doc.Save("scene.xml");
+        doc.Save(path + "scene.xml");
         return "Successfully exported!";
     }
 
@@ -122,10 +129,6 @@ public class ExportScript : EditorWindow
     static XElement Robot(GameObject robot, XElement robotElement)
     {
         var robotBounds = robot.GetComponent<BoxCollider>().bounds;
-        //Debug.Log("robotBounds.min.x " + robotBounds.min.x + " " + "robotBounds.min.z " + robotBounds.min.z);
-        //Debug.Log("robotBounds.max.x " + robotBounds.max.x + " " + "robotBounds.max.z " + robotBounds.max.z);
-        //Debug.Log("robotBounds.extents" + robotBounds.extents);
-        //Debug.Log("robotBounds.size" + robotBounds.size);
         robotElement.Element("startPosition").Attribute("x").Value = $"{robotBounds.min.x}";
         robotElement.Element("startPosition").Attribute("y").Value = $"{-robotBounds.max.z}";
 
@@ -142,24 +145,23 @@ public class ExportScript : EditorWindow
     /// </summary>
     static XElement Walls(GameObject[] staticObjects, XElement world)
     {
-        // (0, 200)      (100, 200)
-        // (0,0)         (100, 0)
-
-        // (0, 100)      (200, 100)
-        // (0,0)         (200, 0)
-
+        /// get bounds of wall as rectangle
+        /// A ----------- B
+        /// |             |
+        /// C ----------- D
+        /// then we need to get wall rotation to decide what points are the ends of the wall
+        /// for this example, if angle > 0, we take points AD, otherwise BC
+        
         if (staticObjects.Length > 0)
         {
             var i = 1;
             foreach (var wall in staticObjects)
             {
                 var bounds = wall.GetComponent<Renderer>().bounds;
-
                 var begin = (x: bounds.min.x, z: 0.0);
                 var end = (x: bounds.max.x, z: 0.0);
-                var rotation = wall.transform.rotation.y;
 
-                if (rotation > 0)
+                if (wall.transform.rotation.y > 0)
                 {
                     begin.z = bounds.max.z;
                     end.z = bounds.min.z;
@@ -170,10 +172,10 @@ public class ExportScript : EditorWindow
                     end.z = bounds.max.z;
                 }
 
-                var wall1 = new XElement("wall", new XAttribute("id", "wall" + i.ToString()),
+                var wallElement = new XElement("wall", new XAttribute("id", "wall" + i.ToString()),
                                                  new XAttribute("begin", $"{begin.x}:{-begin.z}"),
                                                  new XAttribute("end", $"{end.x}:{-end.z}"));
-                world.Element("walls").Add(wall1);
+                world.Element("walls").Add(wallElement);
                 i++;
             }
         }
