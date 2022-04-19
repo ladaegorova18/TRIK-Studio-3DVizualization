@@ -39,7 +39,7 @@ public class Server
 		}
 	}
 
-	public void RunStopPressed(bool paused)
+	public void RunPausePressed(bool paused)
 	{
 		var message = paused ? "Run" : "Stop";
 		SendMessage(message);
@@ -87,7 +87,7 @@ public class Server
 				}
 				while (stream.DataAvailable);
 
-				//Debug.Log(builder.ToString());
+				Debug.Log(builder.ToString());
 				Deserializer.ParseFrameFromString(builder.ToString());
 			}
 			catch (Exception e)

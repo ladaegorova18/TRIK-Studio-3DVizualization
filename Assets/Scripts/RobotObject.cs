@@ -2,19 +2,23 @@
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// Robot controlling class
+/// </summary>
 public class RobotObject : ObjectScript
 {
 	[SerializeField]
-	private Material lineMaterial;
-	private bool isDrawing = false;
-	private Transform lineDrawer;
-	private LineRenderer line;
+	private Material lineMaterial; /// line material is default, you can change it in inspector if necessary
 
-	private AudioSource audioSource;
+	private bool isDrawing = false;
+	private Transform lineDrawer; /// marker for next line point position 
+	private LineRenderer line;
+	private Color lineColor;
+	private float lineWidth = 10;
+
+	private AudioSource audioSource; /// sound to play, sets in inspector
 
 	private float countInterval = 0.25f;
-
-	protected override Vector3 extents { get; set; }
 
 	/// <summary>
 	/// robot position is rotated to 90 degrees 
@@ -27,15 +31,20 @@ public class RobotObject : ObjectScript
 		audioSource = GetComponent<AudioSource>();
 		lineDrawer = transform.Find("LineDrawer");
 		extents = GetComponent<BoxCollider>().size / 2;
-		extents = new Vector3(extents.x, extents.y, 50);
+		extents = new Vector3(extents.x - 30, extents.y, 50);
+		//Debug.Log(startPosition);
 	}
 
 	public override void Reset()
 	{
 		base.Reset();
+		//isDrawing = false;
+		//Debug.Log(transform.position);
 		var lines = GameObject.FindGameObjectsWithTag("line");
 		foreach (var line in lines)
 			Destroy(line);
+		if (isDrawing)
+			CreateLine(lineColor);
 	}
 
 	// Update is called once per frame
@@ -65,6 +74,7 @@ public class RobotObject : ObjectScript
 		while (mSecs > 0)
 		{
 			audioSource.Play();
+			//Debug.Log("beep");
 			mSecs -= timeInterval;
 		}
 		yield return null;
@@ -73,7 +83,7 @@ public class RobotObject : ObjectScript
 	/// <summary>
 	/// Starts drawing new line or stops drawing current line
 	/// </summary>
-	/// <param name="data"> Line color (if transparent, line drawing stops)</param>
+	/// <param name="data"> Line color (if it is transparent, line drawing stops)</param>
 	protected override IEnumerator Marker(string data)
 	{
 		var markerState = data.Split(' ').ToList().Select(x => int.Parse(x)).ToList(); /// parse string rgb values to int
@@ -82,15 +92,24 @@ public class RobotObject : ObjectScript
 		if (color != Color.clear && (line == null || color != line.startColor))
 		{
 			isDrawing = true;
-			var currentLine = new GameObject("Line");
-			line = currentLine.AddComponent<LineRenderer>();
-			line.positionCount = 1;
-			line.material = lineMaterial;
-			line.SetPosition(0, lineDrawer.position);
-			line.startColor = line.endColor = color;
-			line.tag = "line";
+			lineColor = color;
+			CreateLine(color);
 		}
 		else isDrawing = false;
 		yield return null;
+	}
+
+	private void OnApplicationQuit() => isDrawing = false;
+
+	private void CreateLine(Color color)
+	{
+		var currentLine = new GameObject("Line");
+		line = currentLine.AddComponent<LineRenderer>();
+		line.positionCount = 1;
+		line.material = lineMaterial;
+		line.SetPosition(0, lineDrawer.position);
+		line.startColor = line.endColor = color;
+		line.startWidth = line.endWidth = lineWidth;
+		line.tag = "line";
 	}
 }

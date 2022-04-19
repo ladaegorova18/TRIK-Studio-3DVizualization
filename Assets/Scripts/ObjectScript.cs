@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -10,15 +11,17 @@ public class ObjectScript : MonoBehaviour
 	public string Id = "";
 	public string[] Trajectory { get; set; }
 
-	private Vector3 startPosition;
+	public Vector3 startPosition;
 	private Quaternion startRotation;
 
 	protected virtual float rotateAngle { get; } = 0;
 
-	protected virtual Vector3 extents { get; set; } = Vector3.zero;
+	protected Vector3 extents { get; set; } = Vector3.zero;
 
 	protected float animDuration = 0.04f;
 	protected float speed = 1f;
+
+	private List<string> states = new List<string>();
 
 	public void Awake()
 	{
@@ -34,6 +37,7 @@ public class ObjectScript : MonoBehaviour
 
 	public IEnumerator ReadComplexLine(string line)
 	{
+		states.Add(line);
 		var commands = line.Split('|');
 		foreach (var command in commands)
 		{
@@ -73,17 +77,18 @@ public class ObjectScript : MonoBehaviour
 			default:
 				break;
 		}
+		//yield return commandData[0] switch
+		//{
+		//	"pos" => StartCoroutine(Move(commandData[1])),
+		//	"rot" => StartCoroutine(Rotate(commandData[1])),
+		//	"beepState" => StartCoroutine(Beep(commandData[1])),
+		//	"markerState" => StartCoroutine(Marker(commandData[1])),
+		//	_ => throw new System.NotImplementedException()
+		//};
 	}
-	//yield return commandData[0] switch
-	//{
-	//	"pos" => StartCoroutine(Move(commandData[1])),
-	//	"rot" => StartCoroutine(Rotate(commandData[1])),
-	//	"beepState" => StartCoroutine(Beep(commandData[1])),
-	//	"markerState" => StartCoroutine(Marker(commandData[1])),
-	//	_ => _
-	//};
+	
 
-	protected virtual IEnumerator Move(string data)
+protected virtual IEnumerator Move(string data)
 	{
 		// calculate distance to move
 		var coords = data.Split(' ').ToList().Select(x => float.Parse(x)).ToList();

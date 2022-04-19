@@ -25,30 +25,42 @@ public class ButtonScript : MonoBehaviour
 		ConnectionManager.Connect();
 	}
 
-	public void RunStopButtonPressed()
+	/// <summary>
+	/// Handles run/stop button
+	/// </summary>
+	public void RunPauseButtonPressed()
 	{
 		switch (playType)
 		{
 			case PlayType.FromFile:
+				/// start/stop playing coroutine (thread)
 				manager.RunPause();
 				break;
 			case PlayType.Realtime:
-				ConnectionManager.RunStopButtonPressed();
+				/// send signal of run/pause
+				ConnectionManager.RunPauseButtonPressed();
 				break;
 		}
 	}
 
+	/// <summary>
+	/// Handles restart button
+	/// </summary>
 	public void RestartPressed()
 	{
-		manager.ResetPositions();
 		switch (playType)
 		{
 			case PlayType.FromFile:
-				manager.Restart();
+				/// set frame number to 0
+				manager.RestartFromFile();
 				break;
 			case PlayType.Realtime:
+				/// send restart request to TRIK Studio
 				ConnectionManager.RestartPressed();
+				manager.RestartRealTime();
 				break;
 		}
+		/// return all objects to start positions
+		//manager.RestartFromFile();
 	}
 }

@@ -15,8 +15,8 @@ public class ConnectionManager
 	/// </summary>
 	private static Server sendServer;
 
-	private delegate void StopButtonHandler(bool paused);
-	private static event StopButtonHandler NotifyRunStopButton;
+	private delegate void PauseButtonHandler(bool paused);
+	private static event PauseButtonHandler NotifyRunPauseButton;
 
 	private delegate void RestartButtonHandler();
 	private static event RestartButtonHandler NotifyRestartButton;
@@ -33,7 +33,7 @@ public class ConnectionManager
 		recieveServer = new Server();
 		sendServer = new Server();
 
-		NotifyRunStopButton += sendServer.RunStopPressed;
+		NotifyRunPauseButton += sendServer.RunPausePressed;
 		NotifyRestartButton += sendServer.RestartPressed;
 
 		new Thread(() => recieveServer.StartServer(ReceiveServerHost, ReceiveServerPort, Server.ServerType.Recieve)).Start();
@@ -49,9 +49,9 @@ public class ConnectionManager
 		sendServer?.StopServer();
 	}
 
-	public static void RunStopButtonPressed()
+	public static void RunPauseButtonPressed()
 	{
-		NotifyRunStopButton.Invoke(paused);
+		NotifyRunPauseButton.Invoke(paused);
 		paused = !paused;
 	}
 

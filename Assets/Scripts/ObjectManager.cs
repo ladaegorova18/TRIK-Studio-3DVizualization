@@ -46,14 +46,11 @@ public class ObjectManager : MonoBehaviour
 	{
 		if (frames.Count > currFrame)
 		{
+			Debug.Log(frames.Count + " " + currFrame);
 			foreach (var objectState in frames[currFrame].frame)
 			{
 				if (objectsDictionary.ContainsKey(objectState.id))
 					StartCoroutine(objectsDictionary[objectState.id].ReadComplexLine(objectState.state));
-				else
-				{
-					Debug.Log(objectState.id + objectState.state + " !");
-				}
 			}
 			++currFrame;
 		}
@@ -71,16 +68,18 @@ public class ObjectManager : MonoBehaviour
 			StartCoroutine(Play());
 	}
 
-	public void ResetPositions()
+	public void RestartRealTime()
 	{
+		frames.Clear();
 		foreach (var item in objectsDictionary.Values)
-		{
 			item.Reset();
-		}
+		currFrame = 0;
 	}
 
-	public void Restart()
+	public void RestartFromFile()
 	{
+		foreach (var item in objectsDictionary.Values)
+			item.Reset();
 		currFrame = 0;
 		Play();
 	}

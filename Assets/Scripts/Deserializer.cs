@@ -3,6 +3,9 @@ using System.Text;
 using System.Collections.Generic;
 using System;
 
+/// <summary>
+/// Handles operations of reading JSON files
+/// </summary>
 public class Deserializer
 {
 	private static ObjectManager manager;
@@ -71,11 +74,15 @@ public class Deserializer
 		}
 	}
 
+	/// <summary>
+	/// State of one object
+	/// </summary>
 	[Serializable]
 	public class State
 	{
 		public string id;
 		public string state;
+
 		public State(string _id, string _traj)
 		{
 			id = _id;
@@ -83,6 +90,9 @@ public class Deserializer
 		}
 	}
 
+	/// <summary>
+	/// Every frame contains a set of states
+	/// </summary>
 	[Serializable]
 	public class Frame
 	{
