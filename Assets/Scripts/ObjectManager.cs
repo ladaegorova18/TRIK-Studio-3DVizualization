@@ -12,6 +12,8 @@ public class ObjectManager : MonoBehaviour
 	private List<Deserializer.Frame> frames = new List<Deserializer.Frame>();
 	private int currFrame = 0;
 	private bool paused = false;
+	private bool pauseCalled = false;
+	private bool restartCalled = false;
 
 	/// <summary>
 	/// Awake is called before the first frame update
@@ -29,7 +31,9 @@ public class ObjectManager : MonoBehaviour
 		foreach (var item in dynamicObjects)
 		{
 			var script = item.GetComponent(typeof(ObjectScript)) as ObjectScript;
-			objectsDictionary.Add(script.Id, script);
+			var serializedObject = new UnityEditor.SerializedObject(script);
+			var id = serializedObject.FindProperty("Id");
+			objectsDictionary.Add(id.stringValue, script);
 		}
 		StartCoroutine(Play());
 	}
@@ -44,9 +48,18 @@ public class ObjectManager : MonoBehaviour
 	/// </summary>
 	public IEnumerator Play()
 	{
+		if (restartCalled)
+		{
+			RestartRealTime();
+			restartCalled = false;
+		}
+		if (pauseCalled)
+		{
+			RunPause();
+			pauseCalled = false;
+		}
 		if (frames.Count > currFrame)
 		{
-			Debug.Log(frames.Count + " " + currFrame);
 			foreach (var objectState in frames[currFrame].frame)
 			{
 				if (objectsDictionary.ContainsKey(objectState.id))
@@ -59,6 +72,9 @@ public class ObjectManager : MonoBehaviour
 		yield return StartCoroutine(Play());
 	}
 
+	public void PauseCall() => pauseCalled = true;
+	public void RestartCall() => restartCalled = true;
+
 	public void RunPause()
 	{
 		paused = !paused;
@@ -68,19 +84,23 @@ public class ObjectManager : MonoBehaviour
 			StartCoroutine(Play());
 	}
 
-	public void RestartRealTime()
+	/// return all objects to start positions
+	private void ResetPositions()
 	{
-		frames.Clear();
 		foreach (var item in objectsDictionary.Values)
 			item.Reset();
 		currFrame = 0;
 	}
 
+	public void RestartRealTime()
+	{
+		ResetPositions();
+		frames.Clear();
+	}
+
 	public void RestartFromFile()
 	{
-		foreach (var item in objectsDictionary.Values)
-			item.Reset();
-		currFrame = 0;
+		ResetPositions();
 		Play();
 	}
 

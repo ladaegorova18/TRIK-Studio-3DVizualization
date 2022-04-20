@@ -8,7 +8,7 @@ using UnityEngine;
 public class RobotObject : ObjectScript
 {
 	[SerializeField]
-	private Material lineMaterial; /// line material is default, you can change it in inspector if necessary
+	public Material lineMaterial; /// line material is default, you can change it in inspector if necessary
 
 	private bool isDrawing = false;
 	private Transform lineDrawer; /// marker for next line point position 
@@ -31,15 +31,14 @@ public class RobotObject : ObjectScript
 		audioSource = GetComponent<AudioSource>();
 		lineDrawer = transform.Find("LineDrawer");
 		extents = GetComponent<BoxCollider>().size / 2;
-		extents = new Vector3(extents.x - 30, extents.y, 50);
-		//Debug.Log(startPosition);
+		extents = new Vector3(extents.x - 30, extents.y, 30);
+		audioSource.Play();
 	}
 
 	public override void Reset()
 	{
 		base.Reset();
 		//isDrawing = false;
-		//Debug.Log(transform.position);
 		var lines = GameObject.FindGameObjectsWithTag("line");
 		foreach (var line in lines)
 			Destroy(line);
@@ -74,7 +73,6 @@ public class RobotObject : ObjectScript
 		while (mSecs > 0)
 		{
 			audioSource.Play();
-			//Debug.Log("beep");
 			mSecs -= timeInterval;
 		}
 		yield return null;

@@ -60,7 +60,5 @@ public class ButtonScript : MonoBehaviour
 				manager.RestartRealTime();
 				break;
 		}
-		/// return all objects to start positions
-		//manager.RestartFromFile();
 	}
 }

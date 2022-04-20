@@ -24,12 +24,12 @@ public class ExportScript : EditorWindow
         {
             Export();
         }
-        if (GUILayout.Button("ImportSTL"))
+        if (GUILayout.Button("Add robot"))
         {
             var stl = new DrawStlMesh();
             stl.CreateSTL();
         }
-        GUILayout.TextField("Hello! Here \n hello world");
+        //GUILayout.TextField("Hello! Here \n hello world");
         /// TODO: add manual
     }
 
@@ -109,7 +109,10 @@ public class ExportScript : EditorWindow
             var i = 1;
             foreach (var ball in balls)
             {
+                var serializedObject = new SerializedObject(ball.GetComponent<DynamicObject>());
+                serializedObject.FindProperty("Id").stringValue = name + i.ToString();
                 ball.GetComponent<DynamicObject>().Id = name + i.ToString();
+                serializedObject.ApplyModifiedProperties();
                 var position = ball.transform.position;
                 var ballElement = new XElement(name, new XAttribute("id", name + i.ToString()),
                                                         new XAttribute("markerX", $"{position.x}"),

@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using UnityEngine;
 
 public class Server
@@ -29,7 +30,13 @@ public class Server
 				
 				stream = client.GetStream();
 
-				if (type == ServerType.Recieve)
+				
+				if (type == ServerType.Send)
+				{
+					var receiveThread = new Thread(new ThreadStart(ReceiveMessage));
+					receiveThread.Start();
+				}
+				else
 					ReceiveMessage();
 			}
 		}
@@ -87,8 +94,7 @@ public class Server
 				}
 				while (stream.DataAvailable);
 
-				Debug.Log(builder.ToString());
-				Deserializer.ParseFrameFromString(builder.ToString());
+				Deserializer.ReadMessage(builder.ToString());
 			}
 			catch (Exception e)
 			{

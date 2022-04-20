@@ -8,10 +8,21 @@ using UnityEngine;
 /// </summary>
 public class ObjectScript : MonoBehaviour
 {
-	public string Id = "";
-	public string[] Trajectory { get; set; }
+	public string Id;
+	//public UnityEditor.SerializedProperty Id;
 
-	public Vector3 startPosition;
+	//public string GetId()
+	//{
+	//	UnityEditor.SerializedObject
+	//	this.FindProperty()
+	//}
+	//public void SetId()
+	//{
+	//	UnityEditor.SerializedObject
+	//	serializedObject.FindProperty("Id");
+	//}
+	
+	private Vector3 startPosition;
 	private Quaternion startRotation;
 
 	protected virtual float rotateAngle { get; } = 0;
@@ -94,10 +105,10 @@ protected virtual IEnumerator Move(string data)
 		var coords = data.Split(' ').ToList().Select(x => float.Parse(x)).ToList();
 		var target = new Vector3(coords[0] - extents.x, transform.position.y, coords[1] - extents.z);
 		float t = 0;
-		while (t < 1)
+		while (t <= 1)
 		{
 			if (Vector3.Distance(transform.position, target) > 0.01)
-		{
+			{
 				transform.position = Vector3.Lerp(transform.position, target, t);
 			}
 			t += Time.deltaTime / animDuration;
@@ -111,7 +122,7 @@ protected virtual IEnumerator Move(string data)
 		var rotation = float.Parse(data) + rotateAngle;
 		var targetRotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y + rotation, transform.rotation.z);
 		float t = 0;
-		while (t < 1)
+		while (t <= 1)
 		{
 			if (System.Math.Abs(transform.rotation.eulerAngles.y - targetRotation.eulerAngles.y) > 0.01)
 			{

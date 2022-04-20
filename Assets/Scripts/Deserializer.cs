@@ -8,9 +8,22 @@ using System;
 /// </summary>
 public class Deserializer
 {
+	private delegate void PauseButtonHandler();
+	private static event PauseButtonHandler NotifyRunPauseButton;
+
+	private delegate void RestartButtonHandler();
+	private static event RestartButtonHandler NotifyRestartButton;
+
 	private static ObjectManager manager;
 
-	public static void SetManager(ObjectManager _manager) => manager = _manager;
+	private enum Signals { Run, Stop, Restart }
+
+	public static void SetManager(ObjectManager _manager)
+	{
+		manager = _manager;
+		NotifyRunPauseButton += manager.PauseCall;
+		NotifyRestartButton += manager.RestartCall;
+	}
 
 	/// <summary>
 	/// Reads file from directory with application and parses it into separate frames
@@ -37,10 +50,22 @@ public class Deserializer
 		return UnityEngine.JsonUtility.FromJson<Frames>(commands);
 	}
 
+	public static void ReadMessage(string message)
+	{
+		if (message != "")
+		{
+			if (message == "Stop" || message == "Run")
+				NotifyRunPauseButton.Invoke();
+			else if (message == "Restart")
+				NotifyRestartButton.Invoke();
+			else ParseFrameFromString(message);
+		}
+	}
+
 	/// <summary>
 	/// Adds new frame to frame array
 	/// </summary>
-	public static void ParseFrameFromString(string frameString)
+	private static void ParseFrameFromString(string frameString)
 	{
 		string[] separator = { "{\"frame\"" };
 		var framesStrings = frameString.Split(separator, StringSplitOptions.None);
