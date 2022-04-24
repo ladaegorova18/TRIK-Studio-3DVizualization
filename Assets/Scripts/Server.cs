@@ -29,20 +29,18 @@ public class Server
 				Debug.Log("Connected to: " + client.Client.LocalEndPoint);
 				
 				stream = client.GetStream();
-
-				
-				if (type == ServerType.Send)
-				{
-					var receiveThread = new Thread(new ThreadStart(ReceiveMessage));
-					receiveThread.Start();
-				}
-				else
-					ReceiveMessage();
+				stream.ReadTimeout = 30000;
+				var receiveThread = new Thread(new ThreadStart(ReceiveMessage));
+				receiveThread.Start();
 			}
 		}
 		catch (Exception e)
 		{
 			Debug.Log(e.Message);
+		}
+		finally
+		{
+			client?.Close();
 		}
 	}
 
@@ -94,12 +92,10 @@ public class Server
 				}
 				while (stream.DataAvailable);
 
+				Debug.Log(builder.ToString());
 				Deserializer.ReadMessage(builder.ToString());
 			}
-			catch (Exception e)
-			{
-				Debug.Log(e.Message);
-			}
+			catch {}
 		}
 	}
 

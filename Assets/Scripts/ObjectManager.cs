@@ -62,6 +62,7 @@ public class ObjectManager : MonoBehaviour
 		{
 			foreach (var objectState in frames[currFrame].frame)
 			{
+				Debug.Log(objectState.id + " started " + objectState.state);
 				if (objectsDictionary.ContainsKey(objectState.id))
 					StartCoroutine(objectsDictionary[objectState.id].ReadComplexLine(objectState.state));
 			}

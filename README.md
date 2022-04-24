@@ -22,3 +22,23 @@ b) Play animation in real time
 ### If you selected b): 
 5. Set an IP address of the computer with the Unity project to the TRIK Studio "Visualize IP" panel.
 6. Click the "Run" button in Unity, and then click the "Run in realtime" button.
+
+
+##Adding new objects
+
+### Robot
+To add robot object on scene, go to Window/TRIK Studio Interface and click "Add robot".
+
+### Balls and skittles
+You can find in Assets/Physic Objects/ template objects: ball, skittle and wall. To add object to scene just drag it with mouse. 
+
+###Adding walls
+
+If you want to add simple wall, drag it from  Assets/Physic Objects/ to scene and click on it. But if you have some complicated objects, which are acting like walls (for example, sofas),
+you should create bounds around it using template walls. To make these walls transparent, choose them, go to Inspector and remove tick sfrom Mesh Renderer.
+
+### Changing object appearance
+
+If you want to change object material/color, find it in Assets/Materials/ and drag it to object.
+If you want to change object shape, click on it and look at Inspector panel. At Mesh Filter/Mesh choose new mesh. This procedure can change object size. Don't be afraid, just go to Inspector and fix it in Transfom/Scale.
+

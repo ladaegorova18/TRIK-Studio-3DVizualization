@@ -65,8 +65,9 @@ public class Deserializer
 	/// <summary>
 	/// Adds new frame to frame array
 	/// </summary>
-	private static void ParseFrameFromString(string frameString)
+	private static bool ParseFrameFromString(string frameString)
 	{
+		bool result = true;
 		string[] separator = { "{\"frame\"" };
 		var framesStrings = frameString.Split(separator, StringSplitOptions.None);
 		foreach (var str in framesStrings)
@@ -80,11 +81,12 @@ public class Deserializer
 				}
 				catch (Exception e)
 				{
-					UnityEngine.Debug.Log(str);
 					UnityEngine.Debug.Log(e.Message);
+					result = false;
 				}
 			}
 		}
+		return result;
 	}
 	
 	/// <summary>
