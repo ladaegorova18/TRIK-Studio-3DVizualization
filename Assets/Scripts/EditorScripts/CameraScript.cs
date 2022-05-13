@@ -18,12 +18,11 @@ public class CameraScript : MonoBehaviour
     private Transform camTr;
     private GameObject cam;
 
-
     // Use this for initialization
     void Start()
     {
         cam = this.gameObject;
-        cam.transform.LookAt(Vector3.zero);
+        //cam.transform.LookAt(Vector3.zero);
         camX = cam.transform.eulerAngles.x;
         camY = cam.transform.eulerAngles.y;
         camTr = cam.transform;
